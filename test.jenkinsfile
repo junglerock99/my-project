@@ -1,21 +1,49 @@
 pipeline {
     agent any
+    triggers { 
+        pollSCM('H/2 * * * *')
+    }
+    environment {
+        BUILD_MSG = 'Building...'
+    }
+    options {
+        timeout(time: 1, unit: 'MINUTES') 
+        timestamps()
+    }
     stages {
-        stage('Hello') {
+        stage('Build') {
             steps {
-                echo 'Hello World'
+                echo "$BUILD_MSG"
+            }
+            post {
+                success {
+                    echo 'Build stage succeeded'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+            }    
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
             }
         }
     }
     post {
         always { 
-            echo 'I will always say Hello again!'
+            echo 'Always output after all stages'
         }
         success {
-            echo 'I will say Hello only if job is success'
+            echo 'Output on success'
         }
         failure {
-            echo 'I will say Hello only if job is failure'
+            echo 'Output on failure'
+        }
+        cleanup {
+            echo 'Cleaning up after all stages'
         }
     }
 }
