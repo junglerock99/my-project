@@ -36,16 +36,16 @@ pipeline {
     }
     post {
         always { 
-            echo 'Always output after all stages'
+            echo 'post - always'
         }
         success {
-            echo 'Output on success'
+            echo 'post - success'
         }
         failure {
-            echo 'Output on failure'
+            echo 'post - failure'
         }
         cleanup {
-            echo 'Cleaning up after all stages'
+            echo 'post - cleanup'
         }
     }
 }
