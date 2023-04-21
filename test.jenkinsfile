@@ -1,22 +1,27 @@
-# Jenkinsfile
 pipeline {
-    #
     agent any
-    triggers { 
-        pollSCM('H/2 * * * *')
+    triggers {
+        pollSCM('H/5 * * * *')
     }
     environment {
         BUILD_MSG = 'Building...'
     }
     options {
-        timeout(time: 1, unit: 'MINUTES') 
+        timeout(time: 30, unit: 'MINUTES') 
         timestamps()
     }
     stages {
-        #
         stage('Build') {
             steps {
                 echo "$BUILD_MSG"
+                // Get code from github repository
+                checkout([$class: 'GitSCM', 
+                    branches: [[name: '*/main']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [[$class: 'CleanCheckout']],
+                    submoduleCfg: [], 
+                    credentialsId: 'github-credentials',
+                    userRemoteConfigs: [[url: 'https://github.com/junglerock99/my-project.git']]])
             }
             post {
                 success {
@@ -37,16 +42,16 @@ pipeline {
     }
     post {
         always { 
-            echo 'post - always'
+            echo 'Always output after all stages'
         }
         success {
-            echo 'post - success'
+            echo 'Output on success'
         }
         failure {
-            echo 'post - failure'
+            echo 'Output on failure'
         }
         cleanup {
-            echo 'post - cleanup'
+            echo 'Cleaning up after all stages'
         }
     }
 }
