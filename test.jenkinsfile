@@ -15,13 +15,14 @@ pipeline {
             steps {
                 echo "$BUILD_MSG"
                 // Get code from github repository
-                checkout([$class: 'GitSCM', 
+                checkout([
+                    $class: 'GitSCM', 
                     branches: [[name: '*/main']],
                     doGenerateSubmoduleConfigurations: false,
                     extensions: [[$class: 'CleanCheckout']],
                     submoduleCfg: [], 
-                    credentialsId: 'github-credentials',
-                    userRemoteConfigs: [[url: 'https://github.com/junglerock99/my-project.git']]])
+                    userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/junglerock99/my-project.git']]
+                ])
             }
             post {
                 success {
